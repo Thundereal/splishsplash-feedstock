@@ -18,13 +18,23 @@ find_dependency(OpenMP COMPONENTS CXX)
 find_dependency(Threads)
 
 if(NOT TARGET SPlisHSPlasH::SPlisHSPlasH)
+    set(_splish_link)
+    foreach(_splish_file @SPLISH_LIBS@)
+        list(APPEND _splish_link "${_splish_lib}/${_splish_file}")
+    endforeach()
+    if(APPLE)
+        # the 8-wide vectors are Accelerate's there
+        list(APPEND _splish_link "-framework Accelerate")
+    endif()
+    list(APPEND _splish_link OpenMP::OpenMP_CXX Threads::Threads)
     add_library(SPlisHSPlasH::SPlisHSPlasH INTERFACE IMPORTED)
     set_target_properties(SPlisHSPlasH::SPlisHSPlasH PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES "${_splish_inc}/eigen;${_splish_inc}"
         INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${_splish_inc}/eigen;${_splish_inc}"
         INTERFACE_COMPILE_DEFINITIONS "@SPLISH_DEFINES@"
         INTERFACE_COMPILE_OPTIONS "@SPLISH_FLAGS@"
-        INTERFACE_LINK_LIBRARIES "${_splish_lib}/libSPlisHSPlasH.a;${_splish_lib}/libUtilities.a;${_splish_lib}/libtinyexpr.a;${_splish_lib}/libpartio.a;${_splish_lib}/libzlib.a;${_splish_lib}/libMD5.a;${_splish_lib}/libCompactNSearch.a;${_splish_lib}/libDiscregrid.a;OpenMP::OpenMP_CXX;Threads::Threads")
+        INTERFACE_LINK_LIBRARIES "${_splish_link}")
+    unset(_splish_link)
 endif()
 unset(_splish_prefix)
 unset(_splish_lib)

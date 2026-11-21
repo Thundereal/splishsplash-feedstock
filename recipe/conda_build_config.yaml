@@ -1,0 +1,9 @@
+# Where the build resolves its tools from, and where the package is
+# labelled for. Kept here rather than only in the rendered .ci_support
+# files so that a `conda smithy rerender` cannot reset them (the same
+# arrangement as occt-feedstock and freecad-rt-feedstock). Nothing this
+# builds against comes from realthunder.
+channel_sources:
+  - conda-forge
+channel_targets:
+  - realthunder main

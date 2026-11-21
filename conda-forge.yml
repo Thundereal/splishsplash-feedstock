@@ -1,0 +1,19 @@
+build_platform:
+  linux_aarch64: linux_64
+  osx_arm64: osx_64
+conda_build:
+  pkg_format: '2'
+conda_forge_output_validation: true
+github:
+  branch_name: main
+  tooling_branch_name: main
+provider:
+  # The platforms ThunderealCAD is released on, all on GitHub Actions (as
+  # occt-feedstock: this fork has no Azure set-up).
+  linux_64: github_actions
+  linux_aarch64: github_actions
+  linux_ppc64le: None
+  osx_64: github_actions
+  osx_arm64: github_actions
+  win_64: github_actions
+test: native_and_emulated
