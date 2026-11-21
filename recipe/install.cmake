@@ -52,6 +52,10 @@ file(COPY "${SRC}/extern/eigen/Eigen" DESTINATION "${_inc}/eigen")
 file(READ "${BLD}/build.ninja" _ninja)
 string(FIND "${_ninja}" "SPlisHSPlasH.dir/Simulation.cpp.o" _at)
 if(_at EQUAL -1)
+    # as Ninja files are written on Windows
+    string(FIND "${_ninja}" "SPlisHSPlasH.dir\\Simulation.cpp.o" _at)
+endif()
+if(_at EQUAL -1)
     message(FATAL_ERROR "install.cmake: Simulation.cpp's rule is not in build.ninja")
 endif()
 # the rule's own lines: up to the next rule

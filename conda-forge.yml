@@ -3,8 +3,11 @@ build_platform:
   osx_arm64: osx_64
 conda_build:
   pkg_format: '2'
-conda_forge_output_validation: true
+# not a conda-forge feedstock: its name is on no list of theirs to validate
+# against (as freecad-rt-feedstock)
+conda_forge_output_validation: false
 github:
+  user_or_org: Thundereal
   branch_name: main
   tooling_branch_name: main
 provider:

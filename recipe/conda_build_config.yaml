@@ -7,3 +7,9 @@ channel_sources:
   - conda-forge
 channel_targets:
   - realthunder main
+
+# SPlisHSPlasH's 8-wide vectors on macOS are Accelerate's simd::float8, and
+# it uses simd::convert, which the 11.0 SDK does not have. Only the SDK
+# moves: the deployment target stays the pinning's.
+MACOSX_SDK_VERSION:        # [osx]
+  - '14.5'                 # [osx]
