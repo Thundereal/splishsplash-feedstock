@@ -1,0 +1,77 @@
+context:
+  # SPlisHSPlasH has no release archive of 2.19.1: the version is its
+  # version.txt at this commit.
+  version: "2.19.1"
+  rev: dba6b26b9387ab6bdd187d6df0a7c9d490d03500
+  build: 0
+
+package:
+  name: splishsplash
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/InteractiveComputerGraphics/SPlisHSPlasH/archive/${{ rev }}.tar.gz
+    sha256: 375300b71c96ad57836dd35b4df020539822cbf2aad2d2060043e67aed62a453
+
+  # SPlisHSPlasH's own build clones these three as it builds, at these
+  # commits (CMake/SetUpExternalProjects.cmake, CMake/NeighborhoodSearch.cmake).
+  # Here they are sources like any other, and build.sh points the build
+  # at them: nothing is fetched while building.
+  - url: https://github.com/InteractiveComputerGraphics/Discregrid/archive/ddf20dc0480874bf02e0bdc6ded76c1f101b17fb.tar.gz
+    sha256: 5b32ce59bac80abb894c259bb3466214dbafe1daf2edda37e3cc51cc99a7d1e3
+    target_directory: deps/Discregrid
+  - url: https://github.com/InteractiveComputerGraphics/GenericParameters/archive/a4e2744eea526270cfe38b826440d09f66473316.tar.gz
+    sha256: b15a2ea95d08bdb8bb92726a84aae553428001d957eeb1bcd7fdfc0ecfc742ff
+    target_directory: deps/GenericParameters
+  - url: https://github.com/InteractiveComputerGraphics/CompactNSearch/archive/b40afcf47fe1963b363eba2371f04b42720fcb1d.tar.gz
+    sha256: 2bfe7c917bc14ad410ca41d951afe303c1822d13cee80d9846bfb9d6feb802d6
+    target_directory: deps/CompactNSearch
+
+build:
+  number: ${{ build }}
+  # Linux first: it is what the Fluid module's runner is built and tested
+  # on. Windows and macOS follow with a build script each.
+  skip:
+    - not linux
+  script: build.sh
+
+requirements:
+  build:
+    - ${{ stdlib("c") }}
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+    - cmake
+    - ninja
+  host:
+    - libgomp
+
+tests:
+  - script:
+      - test -f $PREFIX/lib/splishsplash/libSPlisHSPlasH.a
+      - test -f $PREFIX/lib/cmake/SPlisHSPlasH/SPlisHSPlasHConfig.cmake
+      - test -f $PREFIX/include/splishsplash/SPlisHSPlasH/Simulation.h
+      - test -f $PREFIX/include/splishsplash/eigen/Eigen/Dense
+
+about:
+  homepage: https://github.com/InteractiveComputerGraphics/SPlisHSPlasH
+  license: MIT
+  license_file:
+    - LICENSE
+    - deps/Discregrid/LICENSE
+    - deps/CompactNSearch/LICENSE
+    - deps/GenericParameters/LICENSE
+    - extern/eigen/COPYING.MPL2
+  summary: SPlisHSPlasH's simulation libraries, for programs that step it themselves
+  description: |
+    The static libraries and headers of SPlisHSPlasH (SPH fluids: DFSPH
+    and others) with the three libraries of its authors it is built on,
+    and no GUI, simulator or Python module. A CMake package
+    (find_package(SPlisHSPlasH CONFIG), target SPlisHSPlasH::SPlisHSPlasH)
+    hands a program the definitions, the vector instructions and the
+    bundled Eigen 3.4 the libraries were compiled with: a program must be
+    compiled the same way, and with that Eigen rather than the
+    environment's.
+
+extra:
+  recipe-maintainers:
+    - realthunder

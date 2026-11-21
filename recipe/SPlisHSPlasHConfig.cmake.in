@@ -1,0 +1,31 @@
+# SPlisHSPlasH's libraries, as packaged by splishsplash-feedstock.
+#
+#   find_package(SPlisHSPlasH CONFIG)
+#   target_link_libraries(program PRIVATE SPlisHSPlasH::SPlisHSPlasH)
+#
+# The target carries the definitions and the vector instructions the
+# libraries were compiled with, and puts their bundled Eigen 3.4 before any
+# other: classes laid out by Eigen cross the libraries' boundary, so a
+# program must see them exactly as the libraries do.
+
+set(SPlisHSPlasH_VERSION "@SPLISH_VERSION@")
+get_filename_component(_splish_prefix "${CMAKE_CURRENT_LIST_DIR}/../../.." ABSOLUTE)
+set(_splish_lib "${_splish_prefix}/lib/splishsplash")
+set(_splish_inc "${_splish_prefix}/include/splishsplash")
+
+include(CMakeFindDependencyMacro)
+find_dependency(OpenMP COMPONENTS CXX)
+find_dependency(Threads)
+
+if(NOT TARGET SPlisHSPlasH::SPlisHSPlasH)
+    add_library(SPlisHSPlasH::SPlisHSPlasH INTERFACE IMPORTED)
+    set_target_properties(SPlisHSPlasH::SPlisHSPlasH PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES "${_splish_inc}/eigen;${_splish_inc}"
+        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${_splish_inc}/eigen;${_splish_inc}"
+        INTERFACE_COMPILE_DEFINITIONS "@SPLISH_DEFINES@"
+        INTERFACE_COMPILE_OPTIONS "@SPLISH_FLAGS@"
+        INTERFACE_LINK_LIBRARIES "${_splish_lib}/libSPlisHSPlasH.a;${_splish_lib}/libUtilities.a;${_splish_lib}/libtinyexpr.a;${_splish_lib}/libpartio.a;${_splish_lib}/libzlib.a;${_splish_lib}/libMD5.a;${_splish_lib}/libCompactNSearch.a;${_splish_lib}/libDiscregrid.a;OpenMP::OpenMP_CXX;Threads::Threads")
+endif()
+unset(_splish_prefix)
+unset(_splish_lib)
+unset(_splish_inc)
